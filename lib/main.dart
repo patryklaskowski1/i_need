@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:i_need/app/home/home_page.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -16,33 +17,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'iNeed',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AddPage(),
+      home: const HomePage(),
     );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  const HomePage({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold();
-  }
-}
-
-class AddPage extends StatelessWidget {
-  const AddPage({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold();
   }
 }
