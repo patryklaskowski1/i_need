@@ -58,7 +58,15 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Builder(builder: (context) {
         if (currentIndex == 1) {
-          return const AddPage();
+          return AddPage(
+            onSave: () {
+              setState(
+                () {
+                  currentIndex = 0;
+                },
+              );
+            },
+          );
         }
         return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
             stream: FirebaseFirestore.instance
