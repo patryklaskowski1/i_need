@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:i_need/app/Add/add_page.dart';
+import 'package:i_need/app/add/add_page.dart';
+import 'package:i_need/app/list_page/shop_list_page.dart';
 import 'package:i_need/app/login/user_page/user_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -46,11 +48,11 @@ class _HomePageState extends State<HomePage> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.list_rounded),
-            label: 'HomePage',
+            label: 'Shop List',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            label: 'AddPage',
+            label: 'Add Product',
           ),
         ],
       ),
@@ -58,14 +60,26 @@ class _HomePageState extends State<HomePage> {
         if (currentIndex == 1) {
           return const AddPage();
         }
-        return StreamBuilder<Object>(
-          stream: null,
-          builder: (context, snapshot) {
-            return const Center(
-              child: Text('HomePage'),
-            );
-          }
-        );
+        return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+            stream: FirebaseFirestore.instance
+                .collection('shoppingList')
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text('Someting went wrong!?'),
+                );
+              }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: Text('Loading...'),
+                );
+              }
+
+              final documents = snapshot.data!.docs;
+
+              return ShopListPage(documents: documents);
+            });
       }),
     );
   }
