@@ -22,7 +22,7 @@ class ShopListPage extends StatelessWidget {
               children: [
                 Text(document['product']),
                 Text(document['shopName']),
-                Text('Kategoria'),
+                const Text('Kategoria'),
               ],
             ),
           ),
