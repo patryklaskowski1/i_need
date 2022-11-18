@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AddPage extends StatefulWidget {
@@ -44,7 +45,14 @@ class _AddPageState extends State<AddPage> {
             },
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              FirebaseFirestore.instance.collection('shoppingList').add(
+                {
+                  'product': productName,
+                  'shopName': shopName,
+                },
+              );
+            },
             child: const Text('Dodaj'),
           ),
         ],
