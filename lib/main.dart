@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:i_need/app/home/home_page.dart';
+import 'package:i_need/app/login/auth/auth_gate.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(),
+      home: const AuthGate(),
     );
   }
 }
