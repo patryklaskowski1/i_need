@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:i_need/app/add/add_page.dart';
 import 'package:i_need/app/list_page/shop_list_page.dart';
 import 'package:i_need/app/login/user_page/user_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -68,26 +67,7 @@ class _HomePageState extends State<HomePage> {
             },
           );
         }
-        return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: FirebaseFirestore.instance
-                .collection('shoppingList')
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const Center(
-                  child: Text('Someting went wrong!?'),
-                );
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: Text('Loading...'),
-                );
-              }
-
-              final documents = snapshot.data!.docs;
-
-              return ShopListPage(documents: documents);
-            });
+        return const ShopListPageContent();
       }),
     );
   }
