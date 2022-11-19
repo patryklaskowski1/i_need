@@ -16,11 +16,23 @@ class AddPage extends StatefulWidget {
 class _AddPageState extends State<AddPage> {
   var productName = '';
   var shopName = '';
-  var categoryName = '';
+  String categoryName = 'Inne';
 
-  final List<String> listCategorys = ['pieczywo', 'warzywa', 'owoce', 'napoje'];
-
-  String dropdownValue = 'pieczywo';
+  final List<String> listCategorys = [
+    'Pieczywo',
+    'Wędliny',
+    'Owoce',
+    'Warzywa',
+    'Nabiał',
+    'Inne',
+    'Słodycze',
+    'Przekąski',
+    'Napoje',
+    'Chemia',
+    'Elektronika',
+    'Części do auta',
+    'Materiały budowlane',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +55,7 @@ class _AddPageState extends State<AddPage> {
               },
             ),
             const SizedBox(
-              height: 18,
+              height: 30,
             ),
             TextField(
               decoration: const InputDecoration(
@@ -58,37 +70,49 @@ class _AddPageState extends State<AddPage> {
               },
             ),
             const SizedBox(
-              height: 18,
+              height: 30,
             ),
             DropdownButton<String>(
-              value: dropdownValue,
-              icon: const Icon(Icons.arrow_downward),
-              elevation: 16,
-              style: const TextStyle(color: Colors.deepPurple),
-              underline: Container(
-                height: 2,
-                color: Colors.deepPurpleAccent,
+              focusColor: Colors.white,
+              value: categoryName,
+              style: const TextStyle(color: Colors.white),
+              iconEnabledColor: Colors.black,
+              items:
+                  listCategorys.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 42,
+                    ),
+                    child: Text(
+                      value,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+              hint: const Text(
+                "Wybierz kategorie",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w500),
               ),
               onChanged: (String? value) {
                 setState(() {
                   categoryName = value!;
                 });
               },
-              items:
-                  listCategorys.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
             ),
             const SizedBox(
-              height: 26,
+              height: 36,
             ),
             ElevatedButton(
-              onPressed: productName.isEmpty ||
-                      shopName.isEmpty ||
-                      categoryName.isEmpty
+              onPressed: productName.isEmpty || shopName.isEmpty
                   ? null
                   : () {
                       FirebaseFirestore.instance.collection('shoppingList').add(
