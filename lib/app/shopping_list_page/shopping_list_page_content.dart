@@ -1,5 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:i_need/app/shopping_list_page/cubit/shopping_list_page_cubit.dart';
 
 class ShoppingListPageContent extends StatelessWidget {
   const ShoppingListPageContent({
@@ -8,22 +9,22 @@ class ShoppingListPageContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        stream:
-            FirebaseFirestore.instance.collection('shoppingList').snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-              child: Text('Someting went wrong!?'),
+    return BlocProvider(
+      create: (context) => ShoppingListPageCubit()..start(),
+      child: BlocBuilder<ShoppingListPageCubit, ShoppingListPageState>(
+        builder: (context, state) {
+          if (state.errorMessage.isNotEmpty) {
+            return Center(
+              child: Text('Someting went wrong ${state.errorMessage}!'),
             );
           }
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (state.isLoading == true) {
             return const Center(
-              child: Text('Loading...'),
+              child: CircularProgressIndicator(),
             );
           }
 
-          final documents = snapshot.data!.docs;
+          final documents = state.documents;
 
           return ListView(
             children: [
@@ -42,6 +43,8 @@ class ShoppingListPageContent extends StatelessWidget {
               ],
             ],
           );
-        });
+        },
+      ),
+    );
   }
 }

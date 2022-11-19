@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:i_need/app/add/add_page.dart';
 import 'package:i_need/app/login/user_page/user_page.dart';
-import 'package:i_need/app/shopping_list_page/shop_list_page.dart';
+import 'package:i_need/app/shopping_list_page/shopping_list_page_content.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
