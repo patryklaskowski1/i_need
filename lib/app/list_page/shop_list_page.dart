@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +21,7 @@ class ShopListPage extends StatelessWidget {
               children: [
                 Text(document['product']),
                 Text(document['shopName']),
-                const Text('Kategoria'),
+                Text(document['category']),
               ],
             ),
           ),

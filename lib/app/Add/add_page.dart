@@ -16,6 +16,11 @@ class AddPage extends StatefulWidget {
 class _AddPageState extends State<AddPage> {
   var productName = '';
   var shopName = '';
+  var categoryName = '';
+
+  final List<String> listCategorys = ['pieczywo', 'warzywa', 'owoce', 'napoje'];
+
+  String dropdownValue = 'pieczywo';
 
   @override
   Widget build(BuildContext context) {
@@ -53,16 +58,44 @@ class _AddPageState extends State<AddPage> {
               },
             ),
             const SizedBox(
+              height: 18,
+            ),
+            DropdownButton<String>(
+              value: dropdownValue,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.deepPurple),
+              underline: Container(
+                height: 2,
+                color: Colors.deepPurpleAccent,
+              ),
+              onChanged: (String? value) {
+                setState(() {
+                  categoryName = value!;
+                });
+              },
+              items:
+                  listCategorys.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            const SizedBox(
               height: 26,
             ),
             ElevatedButton(
-              onPressed: productName.isEmpty || shopName.isEmpty
+              onPressed: productName.isEmpty ||
+                      shopName.isEmpty ||
+                      categoryName.isEmpty
                   ? null
                   : () {
                       FirebaseFirestore.instance.collection('shoppingList').add(
                         {
                           'product': productName,
                           'shopName': shopName,
+                          'category': categoryName,
                         },
                       );
                       widget.onSave();
