@@ -1,5 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:i_need/app/add/cubit/add_page_cubit.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({
@@ -14,11 +15,11 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
-  var productName = '';
-  var shopName = '';
-  String categoryName = 'Inne';
+  String? _product;
+  String? _shopName;
+  String? _category;
 
-  final List<String> listCategorys = [
+  List<String> listOfCategory = [
     'Pieczywo',
     'Wędliny',
     'Owoce',
@@ -36,97 +37,114 @@ class _AddPageState extends State<AddPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              decoration: const InputDecoration(
-                hintText: 'Podaj nazwę produktu',
-              ),
-              onChanged: (newValue) {
-                setState(
-                  () {
-                    productName = newValue;
-                  },
-                );
-              },
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            TextField(
-              decoration: const InputDecoration(
-                hintText: 'Podaj nazwę/rodzaj sklepu',
-              ),
-              onChanged: (newValue) {
-                setState(
-                  () {
-                    shopName = newValue;
-                  },
-                );
-              },
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            DropdownButton<String>(
-              focusColor: Colors.white,
-              value: categoryName,
-              style: const TextStyle(color: Colors.white),
-              iconEnabledColor: Colors.black,
-              items:
-                  listCategorys.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 42,
-                    ),
-                    child: Text(
-                      value,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
+    return BlocProvider(
+      create: (context) => AddPageCubit(),
+      child: BlocListener<AddPageCubit, AddPageState>(
+        listener: (context, state) {
+          if (state.saved) {
+            Navigator.of(context).pop();
+          }
+        },
+        child: BlocBuilder<AddPageCubit, AddPageState>(
+          builder: (context, state) {
+            if (state.errorMessage.isNotEmpty) {
+              return Center(
+                child: Text('Someting went wrong ${state.errorMessage}!'),
+              );
+            }
+
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                        hintText: 'Podaj nazwę produktu',
                       ),
+                      onChanged: (newValue) {
+                        setState(
+                          () {
+                            _product = newValue;
+                          },
+                        );
+                      },
                     ),
-                  ),
-                );
-              }).toList(),
-              hint: const Text(
-                "Wybierz kategorie",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w500),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    TextField(
+                      decoration: const InputDecoration(
+                        hintText: 'Podaj nazwę/rodzaj sklepu',
+                      ),
+                      onChanged: (newValue) {
+                        setState(
+                          () {
+                            _shopName = newValue;
+                          },
+                        );
+                      },
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    DropdownButton<String>(
+                      focusColor: Colors.white,
+                      value: _category,
+                      style: const TextStyle(color: Colors.white),
+                      iconEnabledColor: Colors.black,
+                      items: listOfCategory
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 42,
+                            ),
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      hint: const Text(
+                        "Choose an category",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _category = newValue!;
+                        });
+                      },
+                    ),
+                    const SizedBox(
+                      height: 36,
+                    ),
+                    ElevatedButton(
+                      onPressed: _product == null || _shopName == null
+                          ? null
+                          : () {
+                              context.read<AddPageCubit>().add(
+                                    _product!,
+                                    _shopName!,
+                                    _category!,
+                                  );
+                              widget.onSave();
+                            },
+                      child: const Text('Dodaj'),
+                    ),
+                  ],
+                ),
               ),
-              onChanged: (String? value) {
-                setState(() {
-                  categoryName = value!;
-                });
-              },
-            ),
-            const SizedBox(
-              height: 36,
-            ),
-            ElevatedButton(
-              onPressed: productName.isEmpty || shopName.isEmpty
-                  ? null
-                  : () {
-                      FirebaseFirestore.instance.collection('shoppingList').add(
-                        {
-                          'product': productName,
-                          'shopName': shopName,
-                          'category': categoryName,
-                        },
-                      );
-                      widget.onSave();
-                    },
-              child: const Text('Dodaj'),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

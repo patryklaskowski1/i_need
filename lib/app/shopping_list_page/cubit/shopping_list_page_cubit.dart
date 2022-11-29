@@ -1,8 +1,6 @@
 import 'dart:async';
-
-import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'shopping_list_page_state.dart';
 
@@ -43,7 +41,7 @@ class ShoppingListPageCubit extends Cubit<ShoppingListPageState> {
         (error) {
           emit(
             ShoppingListPageState(
-              documents: [],
+              documents: const [],
               isLoading: false,
               errorMessage: error.toString(),
             ),
