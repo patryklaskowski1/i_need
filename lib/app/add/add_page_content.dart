@@ -44,6 +44,14 @@ class _AddPageState extends State<AddPage> {
           if (state.saved) {
             Navigator.of(context).pop();
           }
+          if (state.errorMessage.isNotEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.errorMessage),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         },
         child: BlocBuilder<AddPageCubit, AddPageState>(
           builder: (context, state) {
@@ -118,10 +126,12 @@ class _AddPageState extends State<AddPage> {
                           fontSize: 20,
                         ),
                       ),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _category = newValue!;
-                        });
+                      onChanged: (newValue) {
+                        setState(
+                          () {
+                            _category = newValue;
+                          },
+                        );
                       },
                     ),
                     const SizedBox(
